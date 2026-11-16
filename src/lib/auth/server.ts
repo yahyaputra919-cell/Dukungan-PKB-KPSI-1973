@@ -17,12 +17,17 @@
  *   - Sandbox live preview: no injection -> falls back to the shared **preview
  *     client** (`./preview`) and derives the preview's `https://*.grok-sandbox.com`
  *     origin from the request, so real sign-in works (no demo users). Sessions
- *     and identities persist in the embedded PGLite DB (same DB as app data);
- *     the process restart wipes both. Live-preview iframe clients use a bearer
- *     token (partitioned cookies) — see `client.ts`.
+ *     and identities persist in the embedded PGLite DB (same DB as app data),
+ *     now stored on disk, so they survive a process restart.
  *   - Off (`VITE_AUTH_ENABLED=false`, the shipped default): no providers;
  *     `requireUserId` resolves a dev user with no database configured, and
  *     throws fail-closed once `DATABASE_URL` is set (see `verify.server.ts`).
+ *
+ * Self-hosted note: on a plain-HTTP deployment (VPS on a bare IP, no TLS) the
+ * hardened `__Host-` + Secure cookies below would be rejected by browsers, so
+ * `plainHttpDeployment` falls back to non-secure cookies with plain names.
+ * Prefer HTTPS in production; this fallback exists only so email/password
+ * sign-in works until TLS is set up.
  *
  * NEVER import this from client code — it pulls in `pg` + the preview secret +
  * server-only Better Auth internals. The client uses `@/lib/auth/client`;
@@ -53,8 +58,10 @@ void ensureDbReady();
 /**
  * Preview secret must outlive module reloads: PGLite (and its session rows) is
  * stored on `globalThis`, so an HMR re-eval of this file must NOT mint a new
- * signing secret or every existing session becomes invalid mid-dev. Process
- * restart clears both the secret and PGLite together.
+ * signing secret or every existing session becomes invalid mid-dev. A process
+ * restart still mints a new preview secret (PGLite itself now persists on
+ * disk), so preview sessions end on restart and sign-in is needed again.
+ * Deployed servers set BETTER_AUTH_SECRET explicitly and are unaffected.
  */
 const globalAuthRef = globalThis as typeof globalThis & {
   __grokAuthPreviewSecret__?: string;
@@ -92,6 +99,20 @@ export const authConfigured =
 // preview allowlist, which makes the OAuth `redirect_uri` the concrete preview URL
 // the broker's preview client accepts.
 const explicitBaseURL = env("BETTER_AUTH_URL");
+
+// Plain-HTTP deployment on a non-loopback host (VPS on a bare IP): browsers
+// reject `__Host-`-prefixed and Secure cookies outside a secure context, which
+// would silently drop every session. Fall back to non-secure cookies with
+// plain names there. HTTPS deployments, the Grok preview, and localhost keep
+// the hardened `__Host-` + Secure setup.
+const plainHttpDeployment =
+  !!explicitBaseURL &&
+  explicitBaseURL.startsWith("http://") &&
+  !/localhost|127\.0\.0\.1|\[::1\]/.test(explicitBaseURL);
+const sessionCookiePrefix = plainHttpDeployment ? "dukungan-pkb" : "__Host-grok-auth";
+
+/** Session token cookie name — also read by the live-preview popup completion page. */
+export const SESSION_TOKEN_COOKIE = `${sessionCookiePrefix}.session_token`;
 // Explicit `string[]` (not a readonly tuple) — Better Auth's DynamicBaseURLConfig
 // requires a mutable `allowedHosts: string[]`.
 const previewAllowedHosts: string[] = [...PREVIEW_ALLOWED_HOSTS];
@@ -144,9 +165,6 @@ const grokUserInfoUrl = `${issuerBase}/api/auth/oauth2/userinfo`;
 const database = databaseUrl
   ? new Pool({ connectionString: databaseUrl })
   : { dialect: pgliteDialect(() => getPglite()), type: "postgres" as const };
-
-/** Session token cookie name — also read by the live-preview popup completion page. */
-export const SESSION_TOKEN_COOKIE = "__Host-grok-auth.session_token";
 
 // Built separately so the `betterAuth({...})` call stays easy to edit without
 // breaking brackets (models often trip on the conditional plugin spread).
@@ -220,14 +238,17 @@ export const auth = betterAuth({
   // Domain), so we drop its auto prefix (`useSecureCookies: false`) and set
   // Secure + the names ourselves. (Browsers allow Secure cookies on
   // `http://localhost`, so local dev still works.)
+  // On a plain-HTTP deployment (`plainHttpDeployment`) the `__Host-` prefix and
+  // Secure flag would get the cookies rejected outright, so both fall back to
+  // plain names without Secure — see `sessionCookiePrefix` above.
   advanced: {
     useSecureCookies: false,
-    defaultCookieAttributes: { secure: true, sameSite: "lax", path: "/" },
+    defaultCookieAttributes: { secure: !plainHttpDeployment, sameSite: "lax", path: "/" },
     cookies: {
       session_token: { name: SESSION_TOKEN_COOKIE },
-      session_data: { name: "__Host-grok-auth.session_data" },
-      account_data: { name: "__Host-grok-auth.account_data" },
-      dont_remember: { name: "__Host-grok-auth.dont_remember" },
+      session_data: { name: `${sessionCookiePrefix}.session_data` },
+      account_data: { name: `${sessionCookiePrefix}.account_data` },
+      dont_remember: { name: `${sessionCookiePrefix}.dont_remember` },
     },
   },
 

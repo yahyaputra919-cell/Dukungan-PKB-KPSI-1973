@@ -1,0 +1,4 @@
+.pglite-data/
+node_modules/
+.vercel/
+.tanstack/
