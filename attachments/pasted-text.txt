@@ -1,0 +1,43 @@
+PERAN
+Kamu adalah full-stack developer senior yang paham keamanan data pribadi dan hukum ketenagakerjaan Indonesia. Bantu saya membangun website petisi/pernyataan dukungan untuk karyawan, dan jelaskan setiap langkah secara bertahap karena saya masih belajar web development.
+
+TUJUAN
+Saya Sekjend PUK K-SPSI 1973 PT. Indomarco Prismatama. Anggota kami belum mencukupi untuk mewakili perundingan PKB. Website ini mengumpulkan pernyataan dukungan karyawan agar PUK dapat bertindak sebagai perwakilan mereka dalam perundingan PKB, dengan target mengumpulkan dukungan lebih dari 50% jumlah karyawan. Rekap datanya akan dipakai sebagai lampiran resmi (ke perusahaan/Disnaker/federasi).
+
+FITUR PUBLIK (mobile-first, mayoritas pengguna membuka dari HP)
+1. Halaman tunggal: penjelasan singkat (apa itu PKB, kenapa dukungan diperlukan, apa yang terjadi pada data) + form.
+2. Isian: Nama lengkap, NIK (16 digit, validasi format), Toko (dropdown + ketik cari), Jabatan (dropdown), Tanda tangan digital (canvas sentuh, bisa dihapus/ulang).
+3. Checkbox persetujuan eksplisit sebelum kirim: "Saya menyatakan dukungan kepada PUK K-SPSI 1973 PT. Indomarco Prismatama untuk mewakili saya dalam perundingan PKB, dan menyetujui pemakaian data saya untuk keperluan tersebut."
+4. Opsional (checkbox terpisah, tidak wajib): "Saya juga bersedia menjadi anggota serikat."
+5. Satu NIK hanya bisa mengirim satu kali (cegah duplikat). Anti-bot (mis. Cloudflare Turnstile).
+6. Halaman sukses + bukti singkat (tanpa menampilkan NIK utuh).
+7. Penghitung progres publik: hanya angka agregat (jumlah dukungan / target), tanpa nama atau data pribadi. Total karyawan dan target diatur admin.
+
+FITUR ADMIN (khusus pengurus)
+- Login aman (Supabase Auth, aktifkan 2FA bila memungkinkan), hanya akun pengurus yang disetujui.
+- Tabel dukungan dengan pencarian dan filter per toko/jabatan; NIK ditampilkan tersamar (mis. 3201************) kecuali saat ekspor resmi.
+- Dashboard: total dukungan, persentase terhadap total karyawan, rekap per toko.
+- Ekspor rekap ke Excel dan PDF (format daftar dukungan: No, Nama, NIK, Toko, Jabatan, Tanda Tangan, Tanggal) untuk lampiran surat.
+- Status verifikasi per entri, dan fitur hapus data atas permintaan pemilik data.
+
+KEAMANAN & PRIVASI (wajib, karena data NIK dan tanda tangan sangat sensitif)
+- Patuhi UU No. 27/2022 tentang Pelindungan Data Pribadi: persetujuan eksplisit, tujuan jelas, data minimal, kebijakan privasi + kontak pengurus.
+- Pengunjung publik hanya boleh INSERT, tidak boleh membaca data apa pun (Row Level Security).
+- NIK dienkripsi di database; tanda tangan disimpan di storage privat dengan akses terbatas.
+- Log akses admin dan kebijakan retensi data (hapus bila tidak dipakai lagi).
+- Data tidak dibagikan ke pihak perusahaan sebelum diputuskan pengurus dan hanya sebagai rekap resmi.
+- Tidak ada pelacak/iklan pihak ketiga.
+- Beri catatan tentang risiko intimidasi terhadap karyawan yang mendukung dan sarankan langkah mitigasi (akses ketat, tidak menampilkan nama di publik).
+
+DASAR HUKUM
+Jangan mengarang pasal atau aturan. Jika ragu, tulis [PERLU VERIFIKASI]. Saya sedang memverifikasi ke federasi/Disnaker apakah pernyataan dukungan non-anggota diakui dalam penentuan keterwakilan PKB. Buat teks pernyataan dukungan dengan placeholder yang mudah saya ubah.
+
+TEKNIS
+- Pilih stack paling sederhana dan gratis (usulan: HTML/JS + Supabase + Netlify). Jika ada pilihan lebih baik, jelaskan singkat alasannya.
+- Bahasa antarmuka: Indonesia sederhana, ramah karyawan toko, ringan di jaringan lemah.
+- Bangun bertahap: (1) skema database + aturan keamanan, (2) form publik, (3) dashboard admin + ekspor, (4) deploy + checklist keamanan sebelum dibagikan.
+
+CARA KERJA
+- Mulai dengan rencana singkat dan tanya maksimal 3 hal yang masih kurang (mis. daftar toko, daftar jabatan, total karyawan).
+- Setiap tahap: kode lengkap siap salin, lalu langkah "apa yang harus saya klik/ketik" dan cara mengujinya.
+- Akhiri tiap tahap dengan checklist keamanan dan satu langkah berikutnya.

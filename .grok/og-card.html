@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<style>
+  @font-face {
+    font-family: "LibSerif";
+    src: url("file:///usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "LibSerif";
+    src: url("file:///usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "LibSerif";
+    src: url("file:///usr/share/fonts/truetype/liberation/LiberationSerif-Italic.ttf") format("truetype");
+    font-weight: 400;
+    font-style: italic;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    background: #F4EFE6;
+  }
+  body {
+    font-family: "LibSerif", "Liberation Serif", "Times New Roman", serif;
+    color: #1C1915;
+    position: relative;
+  }
+  .paper {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 42%, #F7F3EC 0%, #F4EFE6 58%, #E9E1D4 100%);
+  }
+  .edge {
+    position: absolute;
+    left: 72px;
+    right: 72px;
+    height: 7px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .edge span {
+    display: block;
+    height: 1.5px;
+    background: #9B2332;
+  }
+  .edge span.thin { height: 1px; }
+  .edge.top { top: 36px; }
+  .edge.bottom { bottom: 36px; }
+  .lockup {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .seal { width: 124px; height: 124px; display: block; }
+  h1 {
+    margin-top: 28px;
+    font-weight: 700;
+    font-size: 64px;
+    line-height: 1.02;
+    letter-spacing: 0.005em;
+    color: #1C1915;
+  }
+  h1 .pkb {
+    display: block;
+    margin-top: 10px;
+    font-size: 84px;
+    letter-spacing: 0.2em;
+    padding-left: 0.2em;
+    color: #9B2332;
+  }
+  .rules {
+    width: 220px;
+    margin-top: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .rules span { display: block; height: 1.5px; background: #9B2332; }
+  .rules span.thin { height: 1px; }
+  .org {
+    margin-top: 16px;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #1C1915;
+    padding-left: 0.28em;
+  }
+</style>
+</head>
+<body>
+  <div class="paper"></div>
+  <div class="edge top" aria-hidden="true"><span></span><span class="thin"></span></div>
+  <div class="edge bottom" aria-hidden="true"><span class="thin"></span><span></span></div>
+  <main class="lockup">
+    <svg class="seal" viewBox="0 0 160 160" aria-hidden="true">
+      <circle cx="80" cy="80" r="74" fill="none" stroke="#9B2332" stroke-width="3.2"/>
+      <circle cx="80" cy="80" r="64.5" fill="none" stroke="#9B2332" stroke-width="1.15"/>
+      <g stroke="#9B2332" stroke-width="2.2" stroke-linecap="butt">
+        <line x1="80" y1="6.5" x2="80" y2="16.5"/>
+        <line x1="80" y1="143.5" x2="80" y2="153.5"/>
+        <line x1="6.5" y1="80" x2="16.5" y2="80"/>
+        <line x1="143.5" y1="80" x2="153.5" y2="80"/>
+      </g>
+      <path d="M80 38 L114 80 L80 122 L46 80 Z" fill="none" stroke="#9B2332" stroke-width="2.3"/>
+      <path d="M80 54 L98 80 L80 106 L62 80 Z" fill="#9B2332"/>
+      <circle cx="80" cy="80" r="5.2" fill="#F4EFE6"/>
+    </svg>
+    <h1>Pernyataan Dukungan<span class="pkb">PKB</span></h1>
+    <div class="rules" aria-hidden="true"><span></span><span class="thin"></span></div>
+    <p class="org">PUK K-SPSI 1973</p>
+  </main>
+</body>
+</html>

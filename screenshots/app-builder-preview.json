@@ -1,0 +1,39 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Pernyataan Dukungan PKB",
+      "hasCanvas": true,
+      "bodyTextLen": 941,
+      "bodyTextHash": "ce8c62946cfeb7cda3b42b6a1aa5591ba41b5ffb59ca0bbab8f69e2074afdc1c",
+      "bodyTextPrefix": "1973 PUK K-SPSI 1973 PT. Indomarco Prismatama Pengurus BUKAN SIT",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Pernyataan Dukungan PKB",
+      "hasCanvas": true,
+      "bodyTextLen": 941,
+      "bodyTextHash": "ce8c62946cfeb7cda3b42b6a1aa5591ba41b5ffb59ca0bbab8f69e2074afdc1c",
+      "bodyTextPrefix": "1973 PUK K-SPSI 1973 PT. Indomarco Prismatama Pengurus BUKAN SIT",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [
+    "BRAND WARNING: this looks like a game/canvas app but src/lib/og/site.json is missing \"type\": \"x:game\". X uses og:type=x:game to present the unfurl as a game card — set it in /workspace/src/lib/og/site.json per /workspace/.grok/skills/og/SKILL.md. Do not invent x:type or overload twitter:card as the game signal.",
+    "BRAND WARNING: this looks like a game/canvas app but /workspace/public/x-banner.jpg is missing. Games need a 50:11 X feed card (1200×264 JPEG) at public/x-banner.jpg — open /workspace/.grok/skills/og/SKILL.md and finish the brand-asset pass."
+  ],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
