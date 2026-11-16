@@ -1,34 +1,20 @@
-/** Validasi format NIK dan isian. Bukan pengecekan ke Dukcapil. */
+/** Validasi format NIK karyawan dan isian. NIK di sini Nomor Induk Karyawan (10 angka), bukan NIK KTP. */
 
 export function digitsOnly(value: string): string {
   return value.replace(/\D/g, "");
 }
 
-function calendarOk(day: number, month: number, year: number): boolean {
-  if (month < 1 || month > 12 || day < 1 || day > 31) return false;
-  const date = new Date(Date.UTC(year, month - 1, day));
-  return (
-    date.getUTCFullYear() === year &&
-    date.getUTCMonth() === month - 1 &&
-    date.getUTCDate() === day
-  );
-}
-
-/** 16 digit, bukan angka yang sama semua, tanggal lahir di posisi NIK masuk akal. */
+/** 10 digit, bukan angka yang sama semua. Tidak ada tanggal lahir di dalamnya. */
 export function isValidNik(raw: string): boolean {
   const nik = digitsOnly(raw);
-  if (!/^\d{16}$/.test(nik)) return false;
-  if (/^(\d)\1{15}$/.test(nik)) return false;
-  let day = Number(nik.slice(6, 8));
-  const month = Number(nik.slice(8, 10));
-  const year = Number(nik.slice(10, 12));
-  if (day > 40) day -= 40;
-  return calendarOk(day, month, 1900 + year) || calendarOk(day, month, 2000 + year);
+  if (!/^\d{10}$/.test(nik)) return false;
+  if (/^(\d)\1{9}$/.test(nik)) return false;
+  return true;
 }
 
 export function maskNik(nik: string): string {
   const digits = digitsOnly(nik);
-  return `${digits.slice(0, 4)}${"*".repeat(12)}`;
+  return `${digits.slice(0, 4)}${"*".repeat(Math.max(0, digits.length - 4))}`;
 }
 
 export function cleanPersonName(raw: string): string | null {

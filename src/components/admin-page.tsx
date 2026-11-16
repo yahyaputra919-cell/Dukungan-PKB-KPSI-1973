@@ -330,6 +330,7 @@ function ListPanel({
               <th>Nama</th>
               <th>NIK</th>
               <th>Toko</th>
+              <th>Kode toko</th>
               <th>Jabatan</th>
               <th>Anggota</th>
               <th>Status</th>
@@ -343,6 +344,7 @@ function ListPanel({
                 <td>{row.fullName}</td>
                 <td className="tabular-nums">{row.nikMask}</td>
                 <td>{row.storeName}</td>
+                <td>{row.storeCode}</td>
                 <td>{row.positionName}</td>
                 <td>{row.consentMember ? "Ya" : "Tidak"}</td>
                 <td>{row.status === "verified" ? "Sudah dicek" : "Belum dicek"}</td>
@@ -730,6 +732,7 @@ function OfficialSheet({ rows }: { rows: OfficialRow[] }) {
               <th>Nama</th>
               <th>NIK</th>
               <th>Toko</th>
+              <th>Kode toko</th>
               <th>Jabatan</th>
               <th>Tanda tangan</th>
               <th>Tanggal</th>
@@ -743,6 +746,7 @@ function OfficialSheet({ rows }: { rows: OfficialRow[] }) {
                 <td>{row.fullName}</td>
                 <td className="tabular-nums">{row.nik}</td>
                 <td>{row.storeName}</td>
+                <td>{row.storeCode}</td>
                 <td>{row.positionName}</td>
                 <td>
                   <img src={row.signaturePng} alt={`Tanda tangan ${row.fullName}`} className="h-12 w-28 object-contain" />

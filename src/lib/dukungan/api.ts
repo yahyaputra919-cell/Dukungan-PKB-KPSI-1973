@@ -133,6 +133,7 @@ function mapRow(row: {
   full_name: string;
   nik_mask: string;
   store_name: string;
+  store_code: string;
   position_name: string;
   consent_member: boolean;
   status: string;
@@ -145,6 +146,7 @@ function mapRow(row: {
     fullName: row.full_name,
     nikMask: row.nik_mask,
     storeName: row.store_name,
+    storeCode: row.store_code ?? "",
     positionName: row.position_name,
     consentMember: Boolean(row.consent_member),
     status,
@@ -186,9 +188,11 @@ export const submitSupport = createServerFn({ method: "POST" })
     const fullName = cleanPersonName(String(data?.fullName ?? ""));
     if (!fullName) return fail("Nama lengkap belum benar. Gunakan 3–80 huruf.");
     const nik = digitsOnly(String(data?.nik ?? ""));
-    if (!isValidNik(nik)) return fail("NIK harus 16 angka dengan tanggal lahir yang dikenali.");
+    if (!isValidNik(nik)) return fail("NIK harus 10 angka (Nomor Induk Karyawan).");
     const storeName = cleanLabel(String(data?.storeName ?? ""));
     if (!storeName) return fail("Isi nama toko.");
+    const storeCode = cleanLabel(String(data?.storeCode ?? ""), 1, 20);
+    if (!storeCode) return fail("Isi kode toko.");
     const positionName = cleanLabel(String(data?.positionName ?? ""));
     if (!positionName) return fail("Pilih jabatan.");
     if (data?.consentRepresent !== true) {
@@ -253,11 +257,11 @@ export const submitSupport = createServerFn({ method: "POST" })
       await sql`
         insert into submissions (
           id, receipt_code, full_name, nik_hmac, nik_cipher, nik_mask,
-          store_name, position_name, signature_png, consent_represent,
+          store_name, store_code, position_name, signature_png, consent_represent,
           consent_text, consent_member
         ) values (
           ${id}, ${receipt}, ${fullName}, ${hmac}, ${encryptNik(nik)}, ${maskNik(nik)},
-          ${store}, ${position}, ${signature}, ${true},
+          ${store}, ${storeCode}, ${position}, ${signature}, ${true},
           ${settings.consent_text}, ${data.consentMember === true}
         )
       `;
@@ -276,6 +280,7 @@ export const submitSupport = createServerFn({ method: "POST" })
       receipt,
       fullName,
       storeName: store,
+      storeCode,
       positionName: position,
       nikMask: maskNik(nik),
       at: formatWib(new Date()),
@@ -417,7 +422,7 @@ export const listSubmissions = createServerFn({ method: "POST" })
     const sql = await db();
     const totals = await sql<{ n: number }>`
       select count(*)::int as n from submissions
-      where (${pattern} = '' or full_name ilike ${pattern} or store_name ilike ${pattern} or nik_mask ilike ${pattern})
+      where (${pattern} = '' or full_name ilike ${pattern} or store_name ilike ${pattern} or store_code ilike ${pattern} or nik_mask ilike ${pattern})
         and (${store} = '' or store_name = ${store})
         and (${position} = '' or position_name = ${position})
     `;
@@ -427,15 +432,16 @@ export const listSubmissions = createServerFn({ method: "POST" })
       full_name: string;
       nik_mask: string;
       store_name: string;
+      store_code: string;
       position_name: string;
       consent_member: boolean;
       status: string;
       created_at: unknown;
     }>`
-      select id, receipt_code, full_name, nik_mask, store_name, position_name,
+      select id, receipt_code, full_name, nik_mask, store_name, store_code, position_name,
              consent_member, status, created_at
       from submissions
-      where (${pattern} = '' or full_name ilike ${pattern} or store_name ilike ${pattern} or nik_mask ilike ${pattern})
+      where (${pattern} = '' or full_name ilike ${pattern} or store_name ilike ${pattern} or store_code ilike ${pattern} or nik_mask ilike ${pattern})
         and (${store} = '' or store_name = ${store})
         and (${position} = '' or position_name = ${position})
       order by created_at desc
@@ -684,13 +690,14 @@ export const prepareExport = createServerFn({ method: "POST" })
       nik_mask: string;
       nik_cipher: string;
       store_name: string;
+      store_code: string;
       position_name: string;
       consent_member: boolean;
       status: string;
       created_at: unknown;
       signature_png: string;
     }>`
-      select id, receipt_code, full_name, nik_mask, nik_cipher, store_name, position_name,
+      select id, receipt_code, full_name, nik_mask, nik_cipher, store_name, store_code, position_name,
              consent_member, status, created_at, signature_png
       from submissions
       where (${includePending} = true or status = 'verified')

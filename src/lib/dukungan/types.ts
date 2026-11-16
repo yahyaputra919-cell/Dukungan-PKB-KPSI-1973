@@ -32,6 +32,7 @@ export type SubmitInput = {
   fullName: string;
   nik: string;
   storeName: string;
+  storeCode: string;
   positionName: string;
   signaturePng: string;
   consentRepresent: boolean;
@@ -46,6 +47,7 @@ export type SubmitOk = {
   receipt: string;
   fullName: string;
   storeName: string;
+  storeCode: string;
   positionName: string;
   nikMask: string;
   at: string;
@@ -62,6 +64,7 @@ export type SubmissionRow = {
   fullName: string;
   nikMask: string;
   storeName: string;
+  storeCode: string;
   positionName: string;
   consentMember: boolean;
   status: SubmissionStatus;

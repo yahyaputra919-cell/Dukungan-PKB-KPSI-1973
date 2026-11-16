@@ -14,6 +14,7 @@ export function PublicPage() {
   const [nik, setNik] = useState("");
   const [storeName, setStoreName] = useState("");
   const [storeOpen, setStoreOpen] = useState(false);
+  const [storeCode, setStoreCode] = useState("");
   const [positionName, setPositionName] = useState("");
   const [consent, setConsent] = useState(false);
   const [member, setMember] = useState(false);
@@ -63,6 +64,7 @@ export function PublicPage() {
           fullName,
           nik,
           storeName,
+          storeCode,
           positionName,
           signaturePng: signRef.current.toDataURL(),
           consentRepresent: consent,
@@ -190,6 +192,7 @@ export function PublicPage() {
             <Item term="Nama" value={done.fullName} />
             <Item term="NIK" value={done.nikMask} />
             <Item term="Toko" value={done.storeName} />
+            <Item term="Kode toko" value={done.storeCode} />
             <Item term="Jabatan" value={done.positionName} />
             <Item term="Waktu" value={done.at} />
             <Item term="Bersedia jadi anggota" value={done.consentMember ? "Ya" : "Tidak"} />
@@ -215,7 +218,7 @@ export function PublicPage() {
           />
 
           <label className="mt-4 block text-sm font-semibold" htmlFor="nik">
-            NIK *
+            NIK karyawan *
           </label>
           <input
             id="nik"
@@ -223,11 +226,11 @@ export function PublicPage() {
             inputMode="numeric"
             autoComplete="off"
             value={nik}
-            onChange={(event) => setNik(event.target.value.replace(/\D/g, "").slice(0, 16))}
+            onChange={(event) => setNik(event.target.value.replace(/\D/g, "").slice(0, 10))}
             aria-describedby="nik-hint"
           />
           <p id="nik-hint" className="mt-1 text-sm text-muted">
-            {nik.length}/16 angka. Contoh format dicek di tempat, bukan dicek ke Dukcapil.
+            {nik.length}/10 angka. Nomor Induk Karyawan, bukan NIK KTP.
           </p>
 
           <label className="mt-4 block text-sm font-semibold" htmlFor="toko">
@@ -287,6 +290,22 @@ export function PublicPage() {
             )}
           </div>
           <p className="mt-1 text-sm text-muted">Ketik untuk mencari. Jika toko belum ada di daftar, nama yang Anda ketik tetap dipakai.</p>
+
+          <label className="mt-4 block text-sm font-semibold" htmlFor="kode-toko">
+            Kode toko *
+          </label>
+          <input
+            id="kode-toko"
+            className="field mt-1"
+            autoComplete="off"
+            value={storeCode}
+            maxLength={20}
+            onChange={(event) => setStoreCode(event.target.value)}
+            aria-describedby="kode-toko-hint"
+          />
+          <p id="kode-toko-hint" className="mt-1 text-sm text-muted">
+            Kode toko tempat Anda bekerja, sesuai yang tertera di ID karyawan atau jadwal kerja.
+          </p>
 
           <label className="mt-4 block text-sm font-semibold" htmlFor="jabatan">
             Jabatan *

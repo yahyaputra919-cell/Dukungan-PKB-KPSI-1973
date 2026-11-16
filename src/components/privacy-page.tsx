@@ -28,7 +28,7 @@ export function PrivacyPage() {
           sudah dicek.
         </p>
         <h2 className="text-xl">Data yang dikumpulkan</h2>
-        <p>Nama lengkap, NIK, toko, jabatan, tanda tangan, waktu kirim, serta pilihan bersedia atau tidak menjadi anggota. Tidak ada data lain.</p>
+        <p>Nama lengkap, NIK karyawan (Nomor Induk Karyawan, 10 angka), toko, kode toko, jabatan, tanda tangan, waktu kirim, serta pilihan bersedia atau tidak menjadi anggota. Tidak ada data lain.</p>
         <h2 className="text-xl">Tujuan</h2>
         <p>
           Menghitung dukungan agar PUK dapat bertindak dalam perundingan PKB, dan menyusun lampiran
